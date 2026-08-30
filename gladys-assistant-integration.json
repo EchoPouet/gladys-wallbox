@@ -1,0 +1,102 @@
+{
+  "manifest_version": 1,
+  "type": "device",
+  "name": "Wallbox",
+  "description": {
+    "en": "Monitor and control your Wallbox EV chargers via the Wallbox cloud.",
+    "fr": "Suivez et pilotez vos chargeurs Wallbox via le cloud Wallbox."
+  },
+  "version": "1.0.0",
+  "docker_image": "ghcr.io/gladysassistant/gladys-wallbox:1.0.0",
+  "gladys_version": ">=4.86.0",
+  "cover_image": "https://raw.githubusercontent.com/GladysAssistant/gladys-wallbox/main/cover.png",
+  "categories": ["energy"],
+  "transports": ["cloud"],
+  "config_schema": [
+    {
+      "key": "intro",
+      "type": "section",
+      "label": {
+        "en": "Getting started",
+        "fr": "Pour commencer"
+      },
+      "description": {
+        "en": "Connect with your Wallbox account (https://my.wallbox.com). The integration discovers every charging station attached to the account and publishes one device each. No local network access required: everything goes through the Wallbox cloud.",
+        "fr": "Connectez-vous avec votre compte Wallbox (https://my.wallbox.com). L'intégration découvre automatiquement tous les chargeurs du compte et publie un appareil pour chacun. Aucun accès au réseau local requis : tout passe par le cloud Wallbox."
+      },
+      "links": [
+        {
+          "url": "https://my.wallbox.com",
+          "label": {
+            "en": "Wallbox portal",
+            "fr": "Portail Wallbox"
+          }
+        }
+      ]
+    },
+    {
+      "key": "username",
+      "type": "string",
+      "label": {
+        "en": "Wallbox username",
+        "fr": "Identifiant Wallbox"
+      },
+      "description": {
+        "en": "The email address used to sign in to your Wallbox account.",
+        "fr": "L'adresse e-mail utilisée pour vous connecter à votre compte Wallbox."
+      },
+      "placeholder": {
+        "en": "you@example.com",
+        "fr": "vous@exemple.com"
+      },
+      "required": true
+    },
+    {
+      "key": "password",
+      "type": "secret",
+      "label": {
+        "en": "Wallbox password",
+        "fr": "Mot de passe Wallbox"
+      },
+      "description": {
+        "en": "The password of your Wallbox account. It is stored encrypted by Gladys and never sent to the frontend. Requires an admin-level account to control the charger.",
+        "fr": "Le mot de passe de votre compte Wallbox. Il est stocké chiffré par Gladys et jamais renvoyé au frontend. Un compte avec droits admin est requis pour piloter le chargeur."
+      },
+      "placeholder": {
+        "en": "••••••••",
+        "fr": "••••••••"
+      },
+      "required": true
+    },
+    {
+      "key": "poll_frequency",
+      "type": "number",
+      "label": {
+        "en": "Refresh interval (s)",
+        "fr": "Intervalle de rafraîchissement (s)"
+      },
+      "description": {
+        "en": "How often the Wallbox cloud API is polled, in seconds. The default 90 s balances freshness with the Wallbox API rate limits.",
+        "fr": "Fréquence d'interrogation de l'API cloud Wallbox, en secondes. La valeur par défaut de 90 s équilibre fraîcheur des données et limites de débit de l'API Wallbox."
+      },
+      "required": false,
+      "default": 90,
+      "min": 15,
+      "max": 3600
+    }
+  ],
+  "actions": [
+    {
+      "key": "test_wallbox",
+      "label": {
+        "en": "Test the Wallbox connection",
+        "fr": "Tester la connexion Wallbox"
+      },
+      "description": {
+        "en": "Validates the credentials and lists the charging stations found on the account: a summary is shown under the button.",
+        "fr": "Valide les identifiants et liste les chargeurs trouvés sur le compte : un résumé s'affiche sous le bouton."
+      },
+      "timeout_seconds": 30
+    }
+  ]
+}
