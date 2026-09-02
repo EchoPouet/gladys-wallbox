@@ -107,7 +107,7 @@ const FEATURE_NAMES = {
   [FEATURE.MAX_CHARGING_CURRENT]: { en: 'Max charging current', fr: 'Courant de charge max' },
   [FEATURE.MAX_ICP_CURRENT]: { en: 'Max ICP current', fr: 'Courant ICP max' },
   [FEATURE.STATUS]: { en: 'Status', fr: 'Statut' },
-  [FEATURE.ENERGY_PRICE]: { en: 'Energy price', fr: 'Prix de l’énergie' },
+  [FEATURE.ENERGY_PRICE]: { en: 'Energy price (€/kWh)', fr: 'Prix de l’énergie (€/kWh)' },
   [FEATURE.CURRENCY]: { en: 'Currency', fr: 'Devise' },
   [FEATURE.PAUSE_RESUME]: { en: 'Pause / resume', fr: 'Pause / reprise' },
   [FEATURE.LOCK]: { en: 'Lock', fr: 'Verrouillage' },
