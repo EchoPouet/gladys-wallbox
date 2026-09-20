@@ -8,6 +8,7 @@ import assert from 'node:assert/strict';
 import {
   buildDevice,
   buildStates,
+  chargerDevice,
   getChargers,
   normalizeStatus,
   refreshAll,
@@ -150,6 +151,11 @@ test('buildDevice exposes the config controls and the resume button', () => {
   assert.ok(resume, 'resume schedule button present');
   assert.equal(resume.category, DEVICE_FEATURE_CATEGORIES.BUTTON);
   assert.equal(resume.type, 'click');
+
+  const firmware = feats('update-firmware');
+  assert.ok(firmware, 'update firmware button present');
+  assert.equal(firmware.category, DEVICE_FEATURE_CATEGORIES.BUTTON);
+  assert.equal(firmware.type, 'click');
 });
 
 test('config controls are omitted when their source value is missing', () => {
@@ -223,6 +229,31 @@ test('every feature declares finite min and max bounds', () => {
       `feature ${feature.external_id} must define a finite max (Gladys rejects null)`,
     );
   }
+});
+
+test('onSetValue on the firmware button calls updateFirmware and acks 0', async () => {
+  _resetState();
+  const fakeClient = {
+    getChargersList: async () => [4023],
+    getChargerStatus: async () => pulsarStatus(),
+    updateFirmware: async (id) => {
+      fakeClient.lastUpdateId = id;
+      return {};
+    },
+  };
+  await refreshAll(fakeClient);
+
+  const charger = getChargers()[0];
+  const device = buildDevice(gladys, charger);
+  const feature = device.features.find((f) => f.external_id.endsWith(':update-firmware'));
+  assert.ok(feature, 'update firmware button present');
+
+  await chargerDevice.onSetValue(gladys, { device, feature, value: 1, client: fakeClient });
+
+  assert.equal(fakeClient.lastUpdateId, 4023);
+  const ack = gladys.published.find((p) => p.featureExternalId === feature.external_id);
+  assert.ok(ack, 'ack published back to Gladys');
+  assert.equal(ack.state, 0);
 });
 
 test('refreshAll re-discovers only when the charger set changes', async () => {

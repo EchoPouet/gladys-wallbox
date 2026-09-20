@@ -26,7 +26,12 @@ import {
   DEVICE_BLUEPRINTS,
   findBlueprintByDevice,
 } from './src/devices/index.js';
-import { chargerDevice, publishedDeviceIds, refreshAll } from './src/devices/chargerDevice.js';
+import {
+  chargerDevice,
+  getChargers,
+  publishedDeviceIds,
+  refreshAll,
+} from './src/devices/chargerDevice.js';
 
 const gladys = new GladysIntegration();
 
@@ -94,6 +99,32 @@ async function publishTransportChanges(reachable) {
 
 /** One refresh cycle over every charging station. Never throws. */
 let refreshInProgress = false; // true while a cycle is running
+let refreshTimer = null;
+let lastChargerCount = 0;
+
+/**
+ * Effective polling interval: base `poll_frequency` multiplied by the number
+ * of chargers, mirroring Home Assistant (`UPDATE_INTERVAL x N`). The Wallbox
+ * cloud rate-limits aggressively (429): without this, multi-charger accounts
+ * send N times more requests per cycle and get throttled.
+ */
+export function effectiveIntervalMs() {
+  const count = Math.max(getChargers().length, 1);
+  return config.poll_frequency * 1000 * count;
+}
+
+/** (Re)arm the polling timer with the effective interval. */
+function armRefreshTimer() {
+  if (refreshTimer) clearInterval(refreshTimer);
+  const intervalMs = effectiveIntervalMs();
+  lastChargerCount = Math.max(getChargers().length, 1);
+  logger.info(
+    `Wallbox polling every ${Math.round(intervalMs / 1000)}s (${config.poll_frequency}s x ${lastChargerCount} charger(s))`,
+  );
+  refreshTimer = setInterval(() => {
+    refreshNow().catch((err) => logger.error('Refresh cycle failed', err));
+  }, intervalMs);
+}
 
 async function refreshNow() {
   // Skip when a previous cycle is still running, so we never flood the
@@ -125,6 +156,13 @@ async function refreshNow() {
 
     await gladys.setConnectionStatus(true).catch(() => {});
     await publishTransportChanges(true);
+
+    // The charger set may have changed (new/removed station): re-arm the timer
+    // so the effective interval (base x N) stays in sync without reconnecting.
+    const count = Math.max(getChargers().length, 1);
+    if (count !== lastChargerCount && refreshTimer) {
+      armRefreshTimer();
+    }
   } finally {
     refreshInProgress = false;
   }
@@ -165,6 +203,8 @@ gladys.onConfigUpdated(async (newConfig) => {
   setConfig(newConfig);
   // Re-publish the devices (a credential/frequency change affects the polls).
   await publishDevices().catch((err) => logger.error('Re-publish after config change failed', err));
+  // A frequency change affects the timer: re-arm with the effective interval.
+  if (refreshTimer) armRefreshTimer();
 });
 
 // --- Connection lifecycle ----------------------------------------------------
@@ -176,13 +216,10 @@ gladys.on('connected', async () => {
     // 2) Publish all devices as soon as we are connected.
     await publishDevices();
 
-    // 3) Refresh once right away, then every poll_frequency seconds.
+    // 3) Refresh once right away, then every poll_frequency x N seconds
+    // (N = number of chargers, Home Assistant rule against 429s).
     await refreshNow();
-    const intervalMs = config.poll_frequency * 1000;
-    if (refreshTimer) clearInterval(refreshTimer);
-    refreshTimer = setInterval(() => {
-      refreshNow().catch((err) => logger.error('Refresh cycle failed', err));
-    }, intervalMs);
+    armRefreshTimer();
 
     // 4) Report the application-level status, shown in the Configuration
     // screen. Distinct from the container state machine.
@@ -198,8 +235,6 @@ gladys.on('connected', async () => {
       .catch(() => {});
   }
 });
-
-let refreshTimer = null;
 
 gladys.on('disconnected', () => {
   if (refreshTimer) {

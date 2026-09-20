@@ -76,8 +76,8 @@
         "fr": "Intervalle de rafraîchissement (s)"
       },
       "description": {
-        "en": "How often the Wallbox cloud API is polled, in seconds. The default 90 s balances freshness with the Wallbox API rate limits.",
-        "fr": "Fréquence d'interrogation de l'API cloud Wallbox, en secondes. La valeur par défaut de 90 s équilibre fraîcheur des données et limites de débit de l'API Wallbox."
+        "en": "How often the Wallbox cloud API is polled, in seconds. The default 90 s balances freshness with the Wallbox API rate limits. The effective interval is multiplied by the number of chargers (90s x N).",
+        "fr": "Fréquence d'interrogation de l'API cloud Wallbox, en secondes. La valeur par défaut de 90 s équilibre fraîcheur des données et limites de débit de l'API Wallbox. L'intervalle effectif est multiplié par le nombre de chargeurs (90 s x N)."
       },
       "required": false,
       "default": 90,

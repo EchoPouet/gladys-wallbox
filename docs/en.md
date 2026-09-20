@@ -25,7 +25,7 @@ Values are published in Gladys units (kW, kWh, %, km, km/h, A), rounded to **at 
 Each charger exposes:
 
 - **Sensors**: state of charge (%), charging power (kW), added energy (kWh), added green energy (kWh), added grid energy (kWh), added range (km), charging speed (km/h), max available power (A), status text (e.g. "Charging", "Paused"), currency.
-- **Controls**: pause / resume, lock / unlock, maximum charging current (A), "Solar charging" (Off / Eco-Smart / Full solar).
+- **Controls**: pause / resume, lock / unlock, maximum charging current (A), "Solar charging" (Off / Eco-Smart / Full solar), resume-schedule and firmware-update buttons.
 
 Some capabilities are **model-specific** and only appear when the charger supports them (same behaviour as Home Assistant): for example discharged energy on bidirectional stations (the **QS** series).
 
@@ -44,5 +44,5 @@ Some capabilities are **model-specific** and only appear when the charger suppor
 
 ## Known limitations
 
-- The Wallbox API **rate-limits** requests (HTTP 429): too low a refresh interval can hit these limits. The 90-second default is a good balance.
+- The Wallbox API **rate-limits** requests (HTTP 429): too low a refresh interval can hit these limits. The 90-second default is a good balance. The effective interval is multiplied by the number of chargers on the account (90s x N), like Home Assistant.
 - The integration relies on Wallbox's **undocumented public API**; Wallbox may change it without notice.

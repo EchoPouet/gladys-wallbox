@@ -6,7 +6,8 @@
 //     (total / green / grid), added range, charging speed, status text,
 //     energy price;
 //   - command features: pause/resume, lock/unlock, maximum charging current,
-//     Eco-Smart / solar charging mode.
+//     Eco-Smart / solar charging mode, resume-schedule and firmware update
+//     one-shot buttons.
 //
 // The list of stations comes from `GET /v3/chargers/groups` (the charger ids),
 // each wrapped in a `status` payload read from `GET /chargers/status/{id}`.
@@ -92,6 +93,7 @@ export const FEATURE = {
   LOCK: 'lock',
   ECO_MODE: 'eco-mode',
   RESUME_SCHEDULE: 'resume-schedule',
+  UPDATE_FIRMWARE: 'update-firmware',
 };
 
 /** Multi-language labels of the features. */
@@ -113,6 +115,7 @@ const FEATURE_NAMES = {
   [FEATURE.LOCK]: { en: 'Lock', fr: 'Verrouillage' },
   [FEATURE.ECO_MODE]: { en: 'Solar charging', fr: 'Charge solaire' },
   [FEATURE.RESUME_SCHEDULE]: { en: 'Resume schedule', fr: 'Reprendre la programmation' },
+  [FEATURE.UPDATE_FIRMWARE]: { en: 'Update firmware', fr: 'Mettre à jour le firmware' },
 };
 
 /** Round to at most 3 decimal places, Gladys project convention. */
@@ -502,6 +505,20 @@ export function buildFeatures(gladys, charger) {
     keep_history: false,
   });
 
+  // "Update firmware" triggers a pending firmware update (remote-action 5,
+  // wallbox>=0.9.0): same one-shot button pattern as resume-schedule.
+  features.push({
+    name: FEATURE_NAMES[FEATURE.UPDATE_FIRMWARE].en,
+    external_id: ids.feature(FEATURE.UPDATE_FIRMWARE),
+    category: DEVICE_FEATURE_CATEGORIES.BUTTON,
+    type: DEVICE_FEATURE_TYPES.BUTTON.CLICK,
+    min: 0,
+    max: 0,
+    read_only: false,
+    has_feedback: true,
+    keep_history: false,
+  });
+
   return features;
 }
 
@@ -675,6 +692,12 @@ export const chargerDevice = {
     }
     if (feature.external_id === ids.feature(FEATURE.RESUME_SCHEDULE)) {
       await client.resumeSchedule(charger.id);
+      // A button has no persistent state: acknowledge by re-pushing 0.
+      await gladys.publishState(feature.external_id, 0);
+      return;
+    }
+    if (feature.external_id === ids.feature(FEATURE.UPDATE_FIRMWARE)) {
+      await client.updateFirmware(charger.id);
       // A button has no persistent state: acknowledge by re-pushing 0.
       await gladys.publishState(feature.external_id, 0);
       return;

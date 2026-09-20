@@ -20,7 +20,7 @@
 //   GET  /v3/chargers/groups             -> every charger id on the account
 //   GET  /chargers/status/{id}           -> full status of one charger
 //   PUT  /v2/charger/{id}                -> locked / maxChargingCurrent
-//   POST /v3/chargers/{id}/remote-action -> pause (2) / resume (1) / schedule (9)
+//   POST /v3/chargers/{id}/remote-action -> pause (2) / resume (1) / firmware (5) / schedule (9)
 //   POST /chargers/config/{id}           -> icp_max_current, energyCost
 //   PUT  /v4/chargers/{id}/eco-smart     -> eco-smart / full solar
 //
@@ -307,6 +307,16 @@ export class WallboxClient {
       path: '/v3/chargers/{id}/remote-action',
       id: chargerId,
       body: { action: 9 },
+    });
+  }
+
+  /** Trigger a firmware update when one is available (wallbox>=0.9.0). */
+  async updateFirmware(chargerId) {
+    return this._mutate({
+      method: 'POST',
+      path: '/v3/chargers/{id}/remote-action',
+      id: chargerId,
+      body: { action: 5 },
     });
   }
 

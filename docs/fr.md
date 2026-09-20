@@ -25,7 +25,7 @@ Les valeurs sont publiées dans les unités Gladys (kW, kWh, %, km, km/h, A), ar
 Chaque chargeur expose :
 
 - **Capteurs** : niveau de charge (%), puissance de charge (kW), énergie ajoutée (kWh), énergie verte ajoutée (kWh), énergie du réseau ajoutée (kWh), autonomie ajoutée (km), vitesse de charge (km/h), puissance max disponible (A), statut texte (ex. « Charging », « Paused »), devise.
-- **Commandes** : pause / reprise, verrouillage / déverrouillage, courant de charge maximum (A), « Charge solaire » (Désactivé / Eco-Smart / Solaire complet).
+- **Commandes** : pause / reprise, verrouillage / déverrouillage, courant de charge maximum (A), « Charge solaire » (Désactivé / Eco-Smart / Solaire complet), boutons reprise de programmation et mise à jour du firmware.
 
 Certaines fonctionnalités sont **spécifiques au modèle** et n'apparaissent que si le chargeur les prend en charge (comportement identique à Home Assistant) : par exemple l'énergie déchargée sur les bornes bidirectionnelles (séries **QS**).
 
@@ -44,5 +44,5 @@ Certaines fonctionnalités sont **spécifiques au modèle** et n'apparaissent qu
 
 ## Limites connues
 
-- L'API Wallbox **limite le débit** (HTTP 429) : une fréquence de rafraîchissement trop basse peut déclencher ces limites. La valeur par défaut de 90 s est un bon compromis.
+- L'API Wallbox **limite le débit** (HTTP 429) : une fréquence de rafraîchissement trop basse peut déclencher ces limites. La valeur par défaut de 90 s est un bon compromis. L'intervalle effectif est multiplié par le nombre de chargeurs du compte (90 s x N), comme Home Assistant.
 - L'intégration repose sur l'**API publiques non documentées** de Wallbox ; Wallbox peut les modifier sans préavis.

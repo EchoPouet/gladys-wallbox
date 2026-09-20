@@ -209,6 +209,19 @@ test('assertChargerId only accepts a positive integer', () => {
   assert.throws(() => assertChargerId(-1), WallboxError);
 });
 
+test('updateFirmware triggers a firmware update remote-action', async () => {
+  mock.queue(SIGNIN, 200, { data: { attributes: { token: 'jwt-abc' } } });
+  const url = 'https://api.wall-box.com/v3/chargers/7/remote-action';
+  mock.queue(url, 200, { result: {} });
+
+  const client = new WallboxClient({ username: 'u', password: 'p' });
+  await client.updateFirmware(7);
+
+  const call = mock.seen.find((c) => c.url === url);
+  assert.equal(call.method, 'POST');
+  assert.deepEqual(call.body, { action: 5 });
+});
+
 test('an invalid charger id is rejected before any HTTP call', async () => {
   const client = new WallboxClient({ username: 'u', password: 'p' });
   await assert.rejects(client.getChargerStatus('../../etc/passwd'), WallboxError);
