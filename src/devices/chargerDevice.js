@@ -374,13 +374,16 @@ const CONTROL_FEATURES = [
   {
     key: FEATURE.ENERGY_PRICE,
     // The Gladys frontend has no editable free-text nor an editable currency
-    // type, so the tariff is exposed as an editable numeric setpoint (slider +
-    // typed value) with euro unit. min/max mirror Home Assistant (-5..5).
+    // type. TARGET_CHARGE_LIMIT would route to the slider-only row
+    // (MultiLevelDeviceFeature, no typed input: unusable at 0.0001). So the
+    // tariff uses TARGET_CURRENT like the other EV setpoints: it routes to
+    // the setpoint row (`- [typed number] +`), which honors `step` and lets
+    // the user type 0.1734 by hand. Capped to a realistic 0..1 €/kWh range.
     category: DEVICE_FEATURE_CATEGORIES.ELECTRICAL_VEHICLE_CHARGE,
-    type: DEVICE_FEATURE_TYPES.ELECTRICAL_VEHICLE_CHARGE.TARGET_CHARGE_LIMIT,
+    type: DEVICE_FEATURE_TYPES.ELECTRICAL_VEHICLE_CHARGE.TARGET_CURRENT,
     unit: DEVICE_FEATURE_UNITS.EURO,
     min: 0,
-    max: 5,
+    max: 1,
     step: 0.0001,
     keepPrecision: true,
     read_only: false,

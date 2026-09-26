@@ -102,11 +102,12 @@ test('energy price is an editable numeric setpoint that keeps full precision', (
   );
   const device = buildDevice(gladys, c);
   const priceFeature = device.features.find((f) => f.external_id.endsWith(':energy-price'));
-  // Editable numeric setpoint (not read-only, not a free text).
+  // Editable setpoint row (`- [typed number] +`), not the slider-only row.
+  assert.equal(priceFeature.type, 'target-current');
   assert.equal(priceFeature.read_only, false);
   assert.equal(priceFeature.unit, 'euro');
   assert.equal(priceFeature.min, 0);
-  assert.equal(priceFeature.max, 5);
+  assert.equal(priceFeature.max, 1);
   assert.equal(priceFeature.step, 0.0001);
 
   const states = buildStates(gladys, c);
@@ -140,10 +141,11 @@ test('buildDevice exposes the config controls and the resume button', () => {
 
   const price = feats('energy-price');
   assert.ok(price, 'energy price feature present');
-  // Editable numeric setpoint (unit euro), not a read-only sensor/text.
+  // Setpoint row with typed input (unit euro), not a slider-only control.
+  assert.equal(price.type, 'target-current');
   assert.equal(price.unit, 'euro');
   assert.equal(price.min, 0);
-  assert.equal(price.max, 5);
+  assert.equal(price.max, 1);
   assert.equal(price.step, 0.0001);
   assert.equal(price.read_only, false);
 
