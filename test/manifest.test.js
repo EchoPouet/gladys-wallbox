@@ -61,7 +61,7 @@ test('version is semantic and the docker_image carries it', () => {
   assert.ok(manifest.docker_image.endsWith(`:${manifest.version}`));
 });
 
-test('categories are from the official vocabulary and require >= 4.86.0', () => {
+test('categories are from the official vocabulary and require >= 5.1.0', () => {
   const vocabulary = [
     'climate',
     'lighting',
@@ -84,7 +84,7 @@ test('categories are from the official vocabulary and require >= 4.86.0', () => 
   for (const category of manifest.categories) {
     assert.ok(vocabulary.includes(category), `unknown category "${category}"`);
   }
-  assert.match(manifest.gladys_version, /^>=4\.86\./);
+  assert.match(manifest.gladys_version, /^>=5\.1\./);
 });
 
 test('transports is a non-empty subset of local/cloud', () => {
