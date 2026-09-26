@@ -20,12 +20,12 @@ L'intégration découvre automatiquement **tous les chargeurs** du compte et pub
 
 ## Appareils publiés
 
-Les valeurs sont publiées dans les unités Gladys (kW, kWh, %, km, km/h, A), arrondies à **3 décimales maximum**.
+Les valeurs sont publiées dans les unités Gladys (kW, kWh, %, km, km/h, A), arrondies à **3 décimales maximum** (le prix de l'énergie garde ses 4 décimales, ex. 0,1734 €/kWh).
 
 Chaque chargeur expose :
 
 - **Capteurs** : niveau de charge (%), puissance de charge (kW), énergie ajoutée (kWh), énergie verte ajoutée (kWh), énergie du réseau ajoutée (kWh), autonomie ajoutée (km), vitesse de charge (km/h), puissance max disponible (A), statut texte (ex. « Charging », « Paused »), devise.
-- **Commandes** : pause / reprise, verrouillage / déverrouillage, courant de charge maximum (A), « Charge solaire » (Désactivé / Eco-Smart / Solaire complet), boutons reprise de programmation et mise à jour du firmware.
+- **Commandes** : pause / reprise, verrouillage / déverrouillage, courant de charge maximum (A), courant ICP maximum (A), prix de l'énergie (€/kWh, valeur saisie à la main de 0 à 1), « Charge solaire » (Désactivé / Eco-Smart / Solaire complet), boutons reprise de programmation et mise à jour du firmware.
 
 Certaines fonctionnalités sont **spécifiques au modèle** et n'apparaissent que si le chargeur les prend en charge (comportement identique à Home Assistant) : par exemple l'énergie déchargée sur les bornes bidirectionnelles (séries **QS**).
 

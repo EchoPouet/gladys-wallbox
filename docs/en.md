@@ -20,12 +20,12 @@ The integration automatically discovers **all chargers** on the account and publ
 
 ## Published devices
 
-Values are published in Gladys units (kW, kWh, %, km, km/h, A), rounded to **at most 3 decimal places**.
+Values are published in Gladys units (kW, kWh, %, km, km/h, A), rounded to **at most 3 decimal places** (the energy price keeps its 4 decimals, e.g. 0.1734 €/kWh).
 
 Each charger exposes:
 
 - **Sensors**: state of charge (%), charging power (kW), added energy (kWh), added green energy (kWh), added grid energy (kWh), added range (km), charging speed (km/h), max available power (A), status text (e.g. "Charging", "Paused"), currency.
-- **Controls**: pause / resume, lock / unlock, maximum charging current (A), "Solar charging" (Off / Eco-Smart / Full solar), resume-schedule and firmware-update buttons.
+- **Controls**: pause / resume, lock / unlock, maximum charging current (A), maximum ICP current (A), energy price (€/kWh, value typed by hand from 0 to 1), "Solar charging" (Off / Eco-Smart / Full solar), resume-schedule and firmware-update buttons.
 
 Some capabilities are **model-specific** and only appear when the charger supports them (same behaviour as Home Assistant): for example discharged energy on bidirectional stations (the **QS** series).
 
