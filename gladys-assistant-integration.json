@@ -6,12 +6,16 @@
     "en": "Monitor and control your Wallbox EV chargers via the Wallbox cloud.",
     "fr": "Suivez et pilotez vos chargeurs Wallbox via le cloud Wallbox."
   },
-  "version": "0.1.0",
-  "docker_image": "ghcr.io/gladysassistant/gladys-wallbox:0.1.0",
+  "version": "1.0.0",
+  "docker_image": "ghcr.io/echopouet/gladys-wallbox:1.0.0",
   "gladys_version": ">=5.1.0",
   "cover_image": "https://raw.githubusercontent.com/GladysAssistant/gladys-wallbox/main/cover.png",
-  "categories": ["energy"],
-  "transports": ["cloud"],
+  "categories": [
+    "energy"
+  ],
+  "transports": [
+    "cloud"
+  ],
   "config_schema": [
     {
       "key": "intro",
