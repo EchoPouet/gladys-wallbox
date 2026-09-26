@@ -1,6 +1,6 @@
 {
   "name": "gladys-wallbox",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "private": true,
   "description": "Gladys Assistant external integration for the Wallbox cloud API: charging stations, monitoring and control.",
   "type": "module",
