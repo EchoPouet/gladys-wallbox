@@ -180,10 +180,14 @@ const STATUS_LABELS = new Map([
  */
 export function sanitizeText(value, maxLength = 200) {
   if (value === null || value === undefined) return '';
-  return String(value)
-    .replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F]/g, '')
-    .trim()
-    .slice(0, maxLength);
+  return (
+    String(value)
+      // Intentional: strip ASCII control characters from untrusted API strings.
+      // eslint-disable-next-line no-control-regex
+      .replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F]/g, '')
+      .trim()
+      .slice(0, maxLength)
+  );
 }
 
 /** Status text of a charger, in English (published through features text). */
@@ -219,6 +223,8 @@ export function normalizeStatus(status = {}) {
     maxIcpCurrentA: numberOrNull(config.icp_max_current),
     energyPrice: numberOrNull(config.energy_price),
     currencyCode: config.currency?.code ?? null,
+    ecoEnabled,
+    ecoMode,
     hasPowerBoost: 'POWER_BOOST' in features,
     hasBidirectionalEnergy: numberOrNull(status.added_offgrid_energy) !== null,
     stateOfCharge: numberOrNull(status.state_of_charge),

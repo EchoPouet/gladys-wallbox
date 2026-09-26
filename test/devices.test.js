@@ -9,6 +9,7 @@ import {
   buildDevice,
   buildStates,
   chargerDevice,
+  currentEcoMode,
   getChargers,
   normalizeStatus,
   refreshAll,
@@ -113,6 +114,27 @@ test('energy price is an editable numeric setpoint that keeps full precision', (
   const states = buildStates(gladys, c);
   const priceState = states.find((s) => s.device_feature_external_id.endsWith(':energy-price'));
   assert.equal(priceState.state, 0.2068);
+});
+
+test('normalizeStatus exposes the eco-smart mode for the select', () => {
+  const off = normalizeStatus(pulsarStatus());
+  assert.equal(off.ecoEnabled, null);
+  assert.equal(currentEcoMode(off), 'off');
+
+  const base = pulsarStatus();
+  const eco = normalizeStatus({
+    ...base,
+    config_data: { ...base.config_data, eco_smart: { enabled: 1, mode: 0 } },
+  });
+  assert.equal(eco.ecoEnabled, true);
+  assert.equal(eco.ecoMode, 0);
+  assert.equal(currentEcoMode(eco), 'eco_mode');
+
+  const solar = normalizeStatus({
+    ...base,
+    config_data: { ...base.config_data, eco_smart: { enabled: true, mode: 1 } },
+  });
+  assert.equal(currentEcoMode(solar), 'full_solar');
 });
 
 test('buildDevice exposes the config controls and the resume button', () => {
