@@ -199,3 +199,17 @@ test('the cover image is https and the secret is the password', () => {
   assert.equal(secrets[0].key, 'password');
   assert.equal(manifest.config_schema.find((f) => f.key === 'username').type, 'string');
 });
+
+test('the cover image is served from this repository, not the template placeholder', () => {
+  // The official template points cover_image at GladysAssistant/…: left as-is
+  // after a fork, the catalog renders a broken image (the raw URL 404s).
+  assert.match(
+    manifest.cover_image,
+    /^https:\/\/raw\.githubusercontent\.com\/EchoPouet\/gladys-wallbox\//,
+    'cover_image must be the raw cover.png of THIS repository',
+  );
+  assert.ok(
+    !manifest.cover_image.includes('GladysAssistant/'),
+    'cover_image still points at the template repository (404 in the catalog)',
+  );
+});
