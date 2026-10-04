@@ -9,13 +9,9 @@
   "version": "1.0.0",
   "docker_image": "ghcr.io/echopouet/gladys-wallbox:1.0.0",
   "gladys_version": ">=5.1.0",
-  "cover_image": "https://raw.githubusercontent.com/GladysAssistant/gladys-wallbox/main/cover.png",
-  "categories": [
-    "energy"
-  ],
-  "transports": [
-    "cloud"
-  ],
+  "cover_image": "https://raw.githubusercontent.com/EchoPouet/gladys-wallbox/main/cover.png",
+  "categories": ["energy"],
+  "transports": ["cloud"],
   "config_schema": [
     {
       "key": "intro",
